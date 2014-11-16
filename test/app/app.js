@@ -33,7 +33,7 @@ mongo.MongoClient.connect(
         });
 
         app.post('/upload', function(req, res, next) {
-            var form = formidableGrid({db: db, mongo: mongo});
+            var form = formidableGrid(db, mongo);
             var files = [];
 
             debug('Somebody is trying to upload something!');
