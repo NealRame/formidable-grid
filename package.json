@@ -1,0 +1,36 @@
+{
+  "name": "formidable-grid",
+  "version": "0.0.1",
+  "description": "Formidable uploads into MongoDB GridFS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-app": "DEBUG='test-app,formidable-grid' node ./test/app/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NealRame/formidable-grid.git"
+  },
+  "keywords": [
+    "formidable",
+    "mongodb",
+    "http",
+    "upload"
+  ],
+  "author": "Neal.Rame. <contact@nealrame.com>",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/NealRame/formidable-grid/issues"
+  },
+  "homepage": "https://github.com/NealRame/formidable-grid",
+  "dependencies": {
+    "debug": "^2.1.0",
+    "formidable": "^1.0.15",
+    "gridfs-stream": "^0.5.3"
+  },
+  "devDependencies": {
+    "express": "^4.10.2",
+    "mongodb": "^1.4.20",
+    "morgan": "^1.5.0"
+  }
+}
