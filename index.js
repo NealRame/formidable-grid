@@ -1,1 +1,1 @@
-modules.exports = require('./lib/formidable-grid');
+module.exports = require('./lib/formidable-grid');
