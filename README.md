@@ -68,7 +68,7 @@ mongo.MongoClient.connect(
         app.post('/upload', function(req, res, next) {
             var files = [];
             // Create a FormidableGrid parser
-            var form = formidableGrid({db: db, mongo: mongo});
+            var form = formidableGrid(db, mongo);
 
             form
                 .on('file', files.push.bind(files))
