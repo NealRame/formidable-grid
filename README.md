@@ -21,15 +21,25 @@ The `formidableGrid` function returns an instance of `formidable.IncomingForm`.
 var formidableGrid = require('formidable-grid');
 ```
 
-### formidableGrid(db, mongo)
+### formidableGrid(db, mongo[, options])
 
 **Arguments:**
 
-- `db`
+- `db` _Required_
   > An opened mongodb database instance.
 
-- `mongo`
+- `mongo` _Required_
   > A mongodb driver.
+
+- `options` _Optional_
+  > See [options] for more details.
+
+**Options**
+
+- `accept`
+  > An array of `String` or `RegExp`. Each incoming file is accepted if and
+  > only if there is at least one entry in the accept list matching its mime
+  > type.
 
 **Return:**
 
@@ -67,8 +77,10 @@ mongo.MongoClient.connect(
 
         app.post('/upload', function(req, res, next) {
             var files = [];
-            // Create a FormidableGrid parser
-            var form = formidableGrid(db, mongo);
+            // Create a FormidableGrid parser wich only accept image files.
+            var form = formidableGrid(db, mongo, {
+                accept: ['image/.*']
+            });
 
             form
                 .on('file', files.push.bind(files))
