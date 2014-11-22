@@ -34,9 +34,10 @@ var formidableGrid = require('formidable-grid');
 - `options` _Optional_
   > See [options] for more details.
 
-**Options**
+**Options:**
 
 - `accept`
+
   > An array of `String` or `RegExp`. Each incoming file is accepted if and
   > only if there is at least one entry in the accept list matching its mime
   > type.
