@@ -26,12 +26,15 @@ var formidableGrid = require('formidable-grid');
 **Arguments:**
 
 - `db` _Required_
+
   > An opened mongodb database instance.
 
 - `mongo` _Required_
+
   > A mongodb driver.
 
-- `options` _Optional_
+- `options`
+
   > See [options] for more details.
 
 **Options:**
