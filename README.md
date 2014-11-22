@@ -35,7 +35,7 @@ var formidableGrid = require('formidable-grid');
 
 - `options`
 
-  > See [options] for more details.
+  > See **options** below for more details.
 
 **Options:**
 
