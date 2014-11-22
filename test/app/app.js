@@ -33,7 +33,9 @@ mongo.MongoClient.connect(
         });
 
         app.post('/upload', function(req, res, next) {
-            var form = formidableGrid(db, mongo);
+            var form = formidableGrid(db, mongo, {
+                accept: ['image/.*']
+            });
             var files = [];
 
             debug('Somebody is trying to upload something!');
@@ -41,7 +43,10 @@ mongo.MongoClient.connect(
             form
                 .on('file', files.push.bind(files))
                 .once('error', next)
-                .once('end', res.send.bind(res, files))
+                .once('end', function() {
+                    console.log('pouet');
+                    res.send(files);
+                })
                 .parse(req);
         });
 
