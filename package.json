@@ -26,7 +26,8 @@
   "dependencies": {
     "debug": "^2.1.0",
     "formidable": "^1.0.15",
-    "gridfs-stream": "^0.5.3"
+    "gridfs-stream": "^0.5.3",
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "express": "^4.10.2",
