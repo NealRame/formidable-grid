@@ -51,6 +51,55 @@ A customized `formidable.IncomingForm` object. You don't have to provide a
 `onPart` routine. See [Formidable](https://github.com/felixge/node-formidable)
 documentation for mode details.
 
+### Events
+
+#### file
+
+Emitted whenever a file has been received. The callback will be passed two
+parameters: the first is the field name the file is associated with in the
+incoming form, the second is an object hash providing informations on the file.
+
+The object hash provides theses attributes:
+- `id`: the id of the file in the mongodb database,
+- `lastModified`: the date of creation of the file in the database,
+- `name`: the name of the file,
+- `mime`: the mime type of the file
+
+```js
+form.on('file', function(fieldname, file) {
+})
+```
+
+#### progress
+
+See [formidable](https://github.com/felixge/node-formidable#progress) for more
+details.
+
+#### field
+
+See [formidable](https://github.com/felixge/node-formidable#field) for more
+details.
+
+#### fileBegin
+
+See [formidable](https://github.com/felixge/node-formidable#filebegin) for more
+details.
+
+#### error
+
+See [formidable](https://github.com/felixge/node-formidable#error) for more
+details.
+
+#### aborted
+
+See [formidable](https://github.com/felixge/node-formidable#aborted) for more
+details.
+
+#### end
+
+See [formidable](https://github.com/felixge/node-formidable#end) for more
+details.
+
 ## Example with _**express**_
 
 ```js
