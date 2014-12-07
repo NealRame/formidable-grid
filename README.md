@@ -80,14 +80,17 @@ mongo.MongoClient.connect(
         });
 
         app.post('/upload', function(req, res, next) {
-            var files = [];
             // Create a FormidableGrid parser wich only accept image files.
             var form = formidableGrid(db, mongo, {
                 accept: ['image/.*']
             });
+            var files = [];
 
             form
-                .on('file', files.push.bind(files))
+                .on('file', function(name, file) {
+                    console.log('-> ' + name);
+                    files.push(files);
+                })
                 .once('error', next)
                 .once('end', res.send.bind(res, files))
                 .parse(req);

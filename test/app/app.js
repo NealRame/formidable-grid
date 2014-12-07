@@ -41,7 +41,10 @@ mongo.MongoClient.connect(
             debug('Somebody is trying to upload something!');
 
             form
-                .on('file', files.push.bind(files))
+                .on('file', function(name, file) {
+                    console.log(name);
+                    files.push(file);
+                })
                 .once('error', next)
                 .once('end', function() {
                     console.log('pouet');
