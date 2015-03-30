@@ -42,15 +42,42 @@ mongo.MongoClient.connect(
 
             form
                 .on('file', function(name, file) {
-                    console.log(name);
+                    debug('receiving file: ', name);
                     files.push(file);
                 })
                 .once('error', next)
                 .once('end', function() {
-                    console.log('pouet');
+                    debug('multipart end');
                     res.send(files);
                 })
                 .parse(req);
+        });
+
+        app.get('/files/:id', function(req, res, next) {
+            try {
+                var file_id = new mongo.ObjectID(req.params.id);
+                var GridStore = mongo.GridStore;
+
+                GridStore.exist(db, file_id, function(err, exist) {
+                    if (err) {
+                        next(err);
+                    } else if (! exist) {
+                        next(Object.create(
+                            new Error('File not found'), {status: {value: 404}}
+                        ));
+                    } else {
+                        var grid_store = new GridStore(db, file_id, 'r');
+                        var stream = grid_store.stream();
+
+                        res.on('pipe', function() {
+                            res.type(grid_store.contentType);
+                        });
+                        stream.pipe(res);
+                    }
+                });
+            } catch (err) {
+                res.status(500).send(err);
+            }
         });
 
         // 404 not found
