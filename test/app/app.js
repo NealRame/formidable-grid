@@ -188,7 +188,9 @@ mongo.MongoClient.connect(
 
             handle_form_data(form, req)
                 .then(create_thumbs.bind(null, db))
-                .then(next.bind(null))
+                .then(function(result) {
+                    res.send(result);
+                })
                 .catch(next);
         });
 
