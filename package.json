@@ -26,6 +26,7 @@
   "dependencies": {
     "debug": "^2.1.0",
     "formidable": "^1.0.15",
+    "multiparty": "^4.1.1",
     "underscore": "^1.7.0"
   },
   "devDependencies": {
