@@ -2,7 +2,7 @@ var _ = require('underscore');
 var concat = require('concat-stream');
 var debug = require('debug')('test-app');
 var express = require('express');
-var formidableGrid = require('../../lib/formidable-grid');
+var FormidableGrid = require('../../lib/formidable-grid');
 var gm = require('gm');
 var logger = require('morgan');
 var mongo = require('mongodb');
@@ -182,13 +182,13 @@ mongo.MongoClient.connect(
         });
 
         app.post('/upload', function(req, res, next) {
-            var form = formidableGrid(db, mongo, {
-                accept: ['image/.*']
+            var form = new FormidableGrid(db, mongo, {
+                accepted_field_names: [ /^file$/ ],
+                accepted_mime_types: [ /^image\/.*/ ]
             });
-
-            handle_form_data(form, req)
-                .then(create_thumbs.bind(null, db))
+            form.parse(req)
                 .then(function(result) {
+                    debug(result);
                     res.send(result);
                 })
                 .catch(next);
