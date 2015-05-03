@@ -1,9 +1,7 @@
 Formidable Grid
 ===============
 
-Store [Formidable](https://github.com/felixge/node-formidable) uploads into
-[MongoDB](http://www.mongodb.org)
-[GridFS](http://docs.mongodb.org/manual/core/gridfs/?_ga=1.85784351.701162369.1410014968).
+Parse _form-data_ request and store incoming files in _mongodb_.
 
 ## Install
 
@@ -11,100 +9,64 @@ Store [Formidable](https://github.com/felixge/node-formidable) uploads into
 npm install --save git+https://github.com/NealRame/formidable-grid.git
 ```
 
-## Usage
+## API
 
-The interface is the same as the `formidable` module. Indeed `formidable-grid`
-is just an extension of `formidable` to upload directly in a mongodb database.
-The `formidableGrid` function returns an instance of `formidable.IncomingForm`.
+### FormidableGrid(db, mongo[, options])
 
-```js
-var formidableGrid = require('formidable-grid');
-```
-
-### formidableGrid(db, mongo[, options])
+Constructs a `FormidableGrid`.
 
 **Arguments:**
-
 - `db` _Required_
-
   > An opened mongodb database instance.
 
 - `mongo` _Required_
-
   > A mongodb driver.
 
 - `options`
-
-  > See **options** below for more details.
+  > See options below for more details.
 
 **Options:**
+- `root`
+  > The root collection in mongodb to use to store incoming files.
+  > Default value is `mongo.GridStore.DEFAULT_ROOT_COLLECTION`.
 
-- `accept`
+- `accepted_field_names`
+  > An array of `String` or `RegExp`. If that option is provided, each incoming
+  > field name must match at least one of these entry to be accepted.
 
-  > An array of `String` or `RegExp`. Each incoming file is accepted if and
-  > only if there is at least one entry in the accept list matching its mime
-  > type.
+- `accepted_mime_types`
+  > An array of `String` or `RegExp`. If that option is provided, each incoming
+  > file mime type must match at least one of these entry to be accepted.
+
+### FormidableGrid#parse(req)
+
+Parse a given request.
+
+**Arguments:**
+- req, a http request.
 
 **Return:**
-
-A customized `formidable.IncomingForm` object. You don't have to provide a
-`onPart` routine. See [Formidable](https://github.com/felixge/node-formidable)
-documentation for mode details.
-
-### Events
-
-#### file
-
-Emitted whenever a file has been received. The callback will be passed two
-parameters: the first is the field name the file is associated with in the
-incoming form, the second is an object hash providing informations on the file.
-
-The object hash provides theses attributes:
-- `id`: the id of the file in the mongodb database,
-- `lastModified`: the date of creation of the file in the database,
-- `name`: the name of the file,
-- `mime`: the mime type of the file
-
-```js
-form.on('file', function(fieldname, file) {
-})
-```
-
-#### progress
-
-See [formidable](https://github.com/felixge/node-formidable#progress) for more
-details.
-
-#### field
-
-See [formidable](https://github.com/felixge/node-formidable#field) for more
-details.
-
-#### fileBegin
-
-See [formidable](https://github.com/felixge/node-formidable#filebegin) for more
-details.
-
-#### error
-
-See [formidable](https://github.com/felixge/node-formidable#error) for more
-details.
-
-#### aborted
-
-See [formidable](https://github.com/felixge/node-formidable#aborted) for more
-details.
-
-#### end
-
-See [formidable](https://github.com/felixge/node-formidable#end) for more
-details.
+- a `Promise` of an `Array` of field or file objects.
+  - Field objects are of the form:
+    ```javascript
+    {
+      field: 'the_field_name',
+      value: 'the_field_value'
+    }
+    ```
+  - File objets are of the form:
+    ```javascript
+    {
+      field: 'the_field_name',
+      file: '554566e43fff918d1fa15422'
+    }
+    ```
 
 ## Example with _**express**_
 
 ```js
 var express = require('express');
-var formidableGrid = require('formidable-grid');
+var FormidableGrid = require('formidable-grid');
 var mongo = require('mongodb');
 
 mongo.MongoClient.connect(
@@ -129,20 +91,15 @@ mongo.MongoClient.connect(
         });
 
         app.post('/upload', function(req, res, next) {
-            // Create a FormidableGrid parser wich only accept image files.
-            var form = formidableGrid(db, mongo, {
-                accept: ['image/.*']
+            var form = new FormidableGrid(db, mongo, {
+                accepted_field_names: [ /^foo$/ ],    // only handle foo field
+                accepted_mime_types: [ /^image\/.*/ ] // only image file
             });
-            var files = [];
-
-            form
-                .on('file', function(name, file) {
-                    console.log('-> ' + name);
-                    files.push(files);
+            form.parse(req)
+                .then(function(form_data) {
+                    res.send(form_data);
                 })
-                .once('error', next)
-                .once('end', res.send.bind(res, files))
-                .parse(req);
+                .catch(next);
         });
 
         // 404 not found
