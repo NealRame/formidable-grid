@@ -30,7 +30,6 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "concat-stream": "^1.4.8",
     "express": "^4.10.2",
     "gm": "^1.17.0",
     "mongodb": "~2.0",
