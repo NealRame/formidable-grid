@@ -47,14 +47,16 @@ Parse a given request.
 
 **Return:**
 - a `Promise` of an `Array` of field or file objects.
-  - Field objects are of the form:
+
+Field objects are of the form:
 ```javascript
 {
     field: 'the_field_name',
     value: 'the_field_value'
 }
 ```
-  - File objets are of the form:
+
+File objets are of the form:
 ```javascript
 {
     field: 'the_field_name',
