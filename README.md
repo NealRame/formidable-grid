@@ -48,19 +48,19 @@ Parse a given request.
 **Return:**
 - a `Promise` of an `Array` of field or file objects.
   - Field objects are of the form:
-    ```javascript
-    {
-      field: 'the_field_name',
-      value: 'the_field_value'
-    }
-    ```
+```javascript
+{
+    field: 'the_field_name',
+    value: 'the_field_value'
+}
+```
   - File objets are of the form:
-    ```javascript
-    {
-      field: 'the_field_name',
-      file: '554566e43fff918d1fa15422'
-    }
-    ```
+```javascript
+{
+    field: 'the_field_name',
+    file: '554566e43fff918d1fa15422'
+}
+```
 
 ## Example with _**express**_
 
