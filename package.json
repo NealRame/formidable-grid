@@ -1,6 +1,6 @@
 {
   "name": "formidable-grid",
-  "version": "0.3.0",
+  "version": "0.9.0",
   "description": "Formidable uploads into MongoDB GridFS.",
   "main": "index.js",
   "scripts": {
