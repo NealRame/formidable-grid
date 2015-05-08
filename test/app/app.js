@@ -14,20 +14,27 @@ function create_thumb(db, file) {
     return new Promise(function(resolve, reject) {
         var gfs = new GridFs(mongo, db);
         var id = new mongo.ObjectID();
-        var istream = gfs.createReadStream(file);
-        var ostream = gfs.createWriteStream(id, {
-            content_type: 'image/png'
-        });
-        ostream
-            .once('end', resolve.bind(null, {
-                original: file,
-                thumbnail: id.toString()
-            }))
-            .once('error', reject);
-        gm(istream)
-            .resize(256)
-            .stream('png')
-            .pipe(ostream);
+        gfs.existsAsync(file)
+            .then(function(exist) {
+                if (! exist) {
+                    reject(new Error(util.format('Cannot create thumbnail because file "%s" does exist.')));
+                } else {
+                    var istream = gfs.createReadStream(file);
+                    var ostream = gfs.createWriteStream(id, {
+                        content_type: 'image/png'
+                    });
+                    ostream
+                        .once('end', resolve.bind(null, {
+                            original: file,
+                            thumbnail: id.toString()
+                        }))
+                        .once('error', reject);
+                    gm(istream)
+                        .resize(256)
+                        .stream('png')
+                        .pipe(ostream);
+                }
+            });
     });
 }
 
@@ -63,15 +70,29 @@ mongo.MongoClient.connect(
 
         app.post('/upload', function(req, res, next) {
             var form = new FormidableGrid(db, mongo, {
-                accepted_field_names: [ /^file$/ ],
+                accepted_field_names: [ 'file', 'foo', 'gee' ],
                 accepted_mime_types: [ /^image\/.*/ ]
             });
             form.parse(req)
                 .then(function(form_data) {
-                    return _.pluck(form_data, 'file');
+                    debug(util.inspect(form_data));
+                    return _.chain(form_data)
+                        .reject(_.partial(_.has, _, 'file'))
+                        .map(function(data) {
+                            return [data.field, data.value];
+                        })
+                        .object()
+                        .extend({files: _.chain(form_data).pluck('file').compact().value()})
+                        .value();
                 })
-                .then(function(files) {
-                    return create_thumbs(db, files);
+                .then(function(data) {
+                    return create_thumbs(db, data.files)
+                        .then(function(pictures) {
+                            return _.chain(data)
+                                .omit('files')
+                                .extend({pictures: pictures})
+                                .value();
+                        })
                 })
                 .then(function(result) {
                     debug(util.format('-- %s', util.inspect(result)));
