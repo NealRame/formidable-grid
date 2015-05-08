@@ -43,10 +43,10 @@ Constructs a `FormidableGrid`.
 Parse a given request.
 
 **Arguments:**
-- req, a http request.
+- `req`, a http request.
 
 **Return:**
-- a `Promise` of an `Array` of field or file objects.
+- `Promise` of an `Array` of field or file objects.
 
 Field objects are of the form:
 ```javascript
