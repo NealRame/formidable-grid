@@ -46,23 +46,16 @@ Parse a given request.
 - `req`, a http request.
 
 **Return:**
-- `Promise` of an `Array` of field or file objects.
+- `Promise` of an `Array` of part objects.
 
-Field objects are of the form:
+Part objects are of the form:
 ```javascript
 {
     field: 'the_field_name',
     value: 'the_field_value'
 }
 ```
-
-File objets are of the form:
-```javascript
-{
-    field: 'the_field_name',
-    file: '554566e43fff918d1fa15422'
-}
-```
+If part was a file, the `value` will hold the id of the file in the database.
 
 ## Example with _**express**_
 
